@@ -1,0 +1,154 @@
+<div class="container"></div>
+<div class="modal">
+  <div class="modal-container">
+    <div class="modal-left">
+      <h1 class="modal-title">Welcome!</h1>
+      <img src="../../assets/images/Image1.png" width="80%">
+      <p class="modal-desc"></p>
+      <div *ngIf="!signUp" class="input-block">
+        <label for="Username" class="input-label">Username</label>
+        <input [formControl]="userNameControle" required="required" type="text">
+      </div>
+      <div *ngIf="!signUp" class="input-block">
+        <label for="password" class="input-label">Password</label>
+        <div style="display:inline">
+          <input autocomplete="new-password"  [type]="hide ? 'password' : 'text'" 
+            [formControl]="passwordControle" style=" width: 95%;">
+            <i (click)="hide = !hide" class="m-0 pull-rigth fa" 
+            [class]=" {'fa-eye-slash': hide, 'fa-eye': !hide} " ></i>
+        </div>
+      </div>
+      <div *ngIf="signUp">
+        <form class="example" [formGroup]="UserGroup">
+          <div class="container-fluid default-autocomplete default-mt-input">
+            <div class="row">
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>First name</mat-label>
+                  <input matInput formControlName="nameControl">
+                  <mat-error *ngIf="nameControl.hasError('required')">First name <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Last name</mat-label>
+                  <input matInput formControlName="prenomControl">
+                  <mat-error *ngIf="prenomControl.hasError('required')">Last name <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Email</mat-label>
+                  <input type="email" matInput formControlName="emailControl" placeholder="Ex. pat@example.com">
+                  <mat-error *ngIf="f.emailControl.errors?.email">
+                    Please enter a valid email address
+                  </mat-error>
+                  <mat-error *ngIf="f.emailControl.errors?.required">
+                    Email  <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Nom d'utilisateur</mat-label>
+                  <input matInput formControlName="usernameControl">
+                  <mat-error *ngIf="usernameControl.hasError('required')">Username
+                    <strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Gender</mat-label>
+                  <input matInput formControlName="professionControl">
+                  <mat-error *ngIf="genderControl.hasError('required')">Gender<strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Profession</mat-label>
+                  <input matInput formControlName="professionControl">
+                  <mat-error *ngIf="professionControl.hasError('required')">Profession<strong>required</strong></mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-6">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Address</mat-label>
+                  <input matInput formControlName="addressControl">
+                  <mat-error *ngIf="addressControl.hasError('required')">Address <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6 ">
+                <mat-form-field  class="example-full-width">
+                  <mat-label>Password</mat-label>
+                  <input maxlength="20" [(ngModel)]="password" matInput
+                    [type]="hide ? 'password' : 'text'" formControlName="passwordControl">
+                  <mat-icon style="size:10px" matSuffix><i (click)="hide = !hide" class="m-0 pull-right fa"
+                      [class]=" {'fa-eye-slash': hide, 'fa-eye': !hide}"></i>
+                  </mat-icon>
+                  <mat-error *ngIf="f.passwordControl.errors?.required">Password <strong>required</strong>
+                  </mat-error>
+                  <mat-error *ngIf="f.passwordControl.errors?.minlength">mot de passe doit etre <strong>de longueur
+                      4</strong></mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-6">
+                <mat-form-field  class="example-full-width">
+                  <mat-label>Confirm password</mat-label>
+                  <input matInput [type]="hide ? 'password' : 'text'"
+                    formControlName="confirmPassword">
+                  <mat-icon style="size:10px" matSuffix><i (click)="hide = !hide" class="m-0 pull-right fa"
+                      [class]=" {'fa-eye-slash': hide, 'fa-eye': !hide}"></i>
+                  </mat-icon>
+                  <mat-error *ngIf="f.confirmPassword.errors?.required">Confirm Password <strong>required</strong>
+                  </mat-error>
+                  <mat-error *ngIf="f.confirmPassword.errors?.matching">Passwords <strong>must
+                      match</strong></mat-error>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-right">
+        <a *ngIf="!signUp" class="animated-button2" (click)="login()">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>Login</a>
+        <a *ngIf="signUp" class="animated-button2" (click)="Register()">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>Register</a>
+      </div>
+      <p *ngIf="!signUp">Don't have an account?<a class="sign-up" (click)="SignUp()"> Sign up now</a>
+      </p>
+      <p *ngIf="signUp">Do you have an account?<a class="sign-up" (click)="SignIn()"> Sign In </a>
+      </p>
+    </div>
+    <div class="modal-right">
+      <img src="../../assets/images/background/loginbackground.jpg" alt="">
+    </div>
+    <!--**********************************
+	Content body start
+***********************************-->
+    <!-- row -->
+
+    <!--**********************************
+	Content body end
+***********************************-->
+  </div>
+</div>
