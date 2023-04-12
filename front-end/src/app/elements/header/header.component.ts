@@ -2,7 +2,6 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgbDropdownConfig} from '@ng-bootstrap/ng-bootstrap';
 import {AuthService} from "../../shared/service/auth.service";
 import {Router} from "@angular/router";
-import {Role} from "../../model/Role";
 import {Observable} from "rxjs";
 import {Title} from "@angular/platform-browser";
 import {LocalStorageService} from "ngx-webstorage";
@@ -19,14 +18,14 @@ export class HeaderComponent implements OnInit {
 	toggleChat: boolean = true;
 	toggleSingle: boolean = true;
   username!: string;
-  roles!:Role[];
+  role!:string;
 
 	constructor(private authService: AuthService, private router: Router,
               public title: Title, private localStorageService: LocalStorageService) { }
   ngOnInit(): void {
     // @ts-ignore
     this.username = this.localStorageService.retrieve("login");
-    this.roles = this.localStorageService.retrieve('roles');
+    this.role = this.localStorageService.retrieve('roles');
   }
 
   logout() {

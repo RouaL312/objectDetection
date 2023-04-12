@@ -9,6 +9,12 @@ import {ParametreComponent} from "./parametre/parametre.component";
 import {UsersComponent} from "./users/users.component";
 import { ProfileComponent } from './apps/profile/profile.component';
 import { PostDetailsComponent } from './apps/post-details/post-details.component';
+import { ProductsComponent } from './products/products.component';
+import { InvoiceComponent } from './apps/shop/invoice/invoice.component';
+import { EditProductsComponent } from './products/edit-products/edit-products.component';
+import { OrderComponent } from './apps/shop/order/order.component';
+import { RecognitionComponent } from './recognition/recognition.component';
+
 
 const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -19,7 +25,12 @@ const routes: Routes = [
       {path: 'parametre', component: ParametreComponent},
       {path: 'users', component: UsersComponent},
       {path: 'app-profile',component: ProfileComponent},
-      {path: 'post-details',component: PostDetailsComponent}
+      {path: 'post-details',component: PostDetailsComponent},
+      {path: 'products',component: ProductsComponent},
+      {path: 'invoices',component: InvoiceComponent},
+      {path: 'Editproducts',component: EditProductsComponent},
+      {path: 'orders',component: OrderComponent},
+      {path: 'recognition',component: RecognitionComponent}
     ]},
 
 

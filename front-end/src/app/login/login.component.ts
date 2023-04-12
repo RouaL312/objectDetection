@@ -6,7 +6,6 @@ import {Version} from "../model/Version";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AbstractControl,FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../shared/service/auth.service";
-import {Role} from "../model/Role";
 import {LocalStorageService} from "ngx-webstorage";
 import {Title} from "@angular/platform-browser";
 import {MessageService} from "primeng/api";
@@ -200,8 +199,8 @@ export class LoginComponent  {
     this.userService.addUser(this.UserForm).subscribe(data => {
       this.messageService.add({
         severity: 'success',
-        summary: 'Ajouter utilisateur',
-        detail: 'L\'utilisateur est ajouté avec success'
+        summary: 'Add user',
+        detail: 'User added successfully'
       });
     }, error => {
       this.messageService.add({

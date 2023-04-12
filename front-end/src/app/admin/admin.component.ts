@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {Title} from "@angular/platform-browser";
-import {Role} from "../model/Role";
 import {LocalStorageService} from "ngx-webstorage";
 
 @Component({

@@ -34,8 +34,8 @@ export class NavHeaderComponent implements OnInit {
         const div =  document.getElementById('main-wrapper');
         if(this.screenWidth <768) {
             document.body.setAttribute('data-sidebar-style', 'overlay');
-        } else if(this.screenWidth >=768 && this.screenWidth <=1023) {
-            document.body.setAttribute('data-sidebar-style', 'mini');
+        } else if(this.screenWidth >=768 && this.screenWidth <=2046) {
+            document.body.setAttribute('data-sidebar-style', 'modern');
         } else {
             document.body.setAttribute('data-sidebar-style', 'full');
         }

@@ -16,7 +16,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 CORS(app)
 app.config.from_object('app.configuration.Config')
-#app.config["AUDIO_UPLOADS"] = os.path.join(basedir, '../speaker/data/input')
+app.config["IMAGE_FOLDER"] = os.path.join('../imagess')
 #app.config["SPEAKERS"] = os.path.join(basedir,'F:/test+historique(2)/flask-speaker-id/app/static/assets/speakers')
 db = SQLAlchemy  (app) # flask-sqlalchemy
 bc = Bcrypt      (app) # flask-bcrypt

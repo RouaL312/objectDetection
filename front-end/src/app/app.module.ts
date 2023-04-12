@@ -113,6 +113,21 @@ import { ComposeComponent } from './apps/email/compose/compose.component';
 import { InboxComponent } from './apps/email/inbox/inbox.component';
 import { ReadComponent } from './apps/email/read/read.component';
 import { CalenderComponent } from './apps/calender/calender.component';
+import { ProductsComponent } from './products/products.component';
+import {DataViewModule} from 'primeng/dataview';
+import {PanelModule} from 'primeng/panel';
+import {RatingModule} from 'primeng/rating';
+import { EditProductsComponent } from './products/edit-products/edit-products.component';
+import {CalendarModule} from 'primeng/calendar';
+import {SliderModule} from 'primeng/slider';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {ContextMenuModule} from 'primeng/contextmenu';
+import {ProgressBarModule} from 'primeng/progressbar';
+import {FileUploadModule} from 'primeng/fileupload';
+;import {RadioButtonModule} from 'primeng/radiobutton';
+import {InputNumberModule} from 'primeng/inputnumber';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { RecognitionComponent } from './recognition/recognition.component';
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
   timeGridPlugin,
@@ -148,8 +163,22 @@ FullCalendarModule.registerPlugins([
     LayoutsComponent,
     ParametreComponent,
     UsersComponent,
+    ProductsComponent,
+    EditProductsComponent,
+    RecognitionComponent,
   ],
   imports: [
+    CalendarModule,
+    SliderModule,
+    MultiSelectModule,
+    ContextMenuModule,
+    FileUploadModule,
+    RadioButtonModule,
+    InputTextareaModule,
+    InputNumberModule,
+    PanelModule,
+    ProgressBarModule,
+    RatingModule,
     InputTextModule,
     ToolbarModule,
     TableModule,
@@ -230,7 +259,9 @@ FullCalendarModule.registerPlugins([
     ReactiveFormsModule,
     SweetAlert2Module.forRoot(),
     ConfirmDialogModule,
-    ReactiveFormsModule
+    DataViewModule,
+
+    
   ],
   providers: [
     AuthGuard,

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import {Role} from "../../model/Role";
 import {LocalStorageService} from "ngx-webstorage";
 
 @Component({
