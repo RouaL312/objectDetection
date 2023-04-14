@@ -37,7 +37,6 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatCardModule} from "@angular/material/card";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {DragDropModule} from "@angular/cdk/drag-drop";
-import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatButtonModule} from "@angular/material/button";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatSelectModule} from "@angular/material/select";
@@ -127,6 +126,7 @@ import {FileUploadModule} from 'primeng/fileupload';
 ;import {RadioButtonModule} from 'primeng/radiobutton';
 import {InputNumberModule} from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import { RecognitionComponent } from './recognition/recognition.component';
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -168,6 +168,7 @@ FullCalendarModule.registerPlugins([
     RecognitionComponent,
   ],
   imports: [
+    MatDatepickerModule,
     CalendarModule,
     SliderModule,
     MultiSelectModule,

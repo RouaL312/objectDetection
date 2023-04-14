@@ -50,27 +50,34 @@ def register():
     username = data['username']
     password = data['password']
     email = data['email']
-    name = data['firstName'] + ' ' + data['lastName'],
+    firstName = data['firstName']
+    lastName= data['lastName'],
     gender = data['gender'],
     address = data['address'],
     profession = data['profession'],
-    if type(data['authorities']) == dict:
-        is_admin = data['authorities']['isAdmin']
-    elif type(data['authorities']) == list:
-        is_admin = data['authorities'][0]['isAdmin']
+    phone = data['phone'],
+    print(data)
+    codePostal = data['codePostal'],
+    dateDeNaissance = data['dateDeNaissance'],
+
+    is_admin=0
+    if data['authorities']:
+        is_admin = data['authorities']
     # filter User out of database through username
     user = User.query.filter_by(username=username).first()
     # filter User out of database through username
     user_by_email = User.query.filter_by(email=email).first()
-    if user or user_by_email:
-        msg = 'Error: User exists!'
+    if user :
+        msg = 'Error: Username '+username+ ' exists!'
+    elif user_by_email :
+        msg = 'Error: l\'email '+email +' exists!'
     else:
         pw_hash = bc.generate_password_hash(password).decode('utf-8')
-        user = User(username, email, pw_hash, name,
-                    gender, profession, address, 0)
+        user = User(username, email, pw_hash, firstName,lastName,
+                    gender, profession, address, is_admin,phone,codePostal,dateDeNaissance)
         user.save()
         msg = 'User created'
-    return msg
+    return  jsonify(msg)
 
 # Authenticate user
 @app.route('/auth/login', methods=['GET', 'POST'])
@@ -115,66 +122,54 @@ def getUsers():
     for user in users:
         user_data = {'id': user.id_user, 'username': user.username,
                      'password': user.password, 'email': user.email,
-                     'name': user.name, 'gender': user.gender, 'profession': user.profession,
-                     'address': user.address, 'authorities': user.is_admin, 'phone': user.phone}
+                     'lastName': user.lastName,'firstName':user.firstName, 'gender': user.gender, 'profession': user.profession,
+                     'address': user.address, 'authorities': user.is_admin, 'phone': user.phone,'codePostal':user.codePostal,'dateDeNaissance':user.dateDeNaissance}
         result.append(user_data)
     return jsonify(result)
+#get user by login
+@app.route('/api/user/getUserByLogin', methods=['GET'])
+def getUserByLogin():
+    username = request.args.get('login')
+    print(login)
+    user=User.query.filter_by(username=username).first()
+    user_data = {'id': user.id_user, 'username': user.username,
+                'password': user.password, 'email': user.email,
+                'lastName': user.lastName,'firstName':user.firstName, 'gender': user.gender, 'profession': user.profession,
+                'address': user.address,'phone': user.phone,'codePostal': user.codePostal ,'dateDeNaissance': user.dateDeNaissance}
+    return jsonify(user_data)
 
-
-@app.route('/api/user/addUser', methods=['GET', 'POST'])
-def saveUser():
-    if current_user.is_admin:
-        msg = None
-
-        # assign form data to variables
-        username = request.form.get('username', '', type=str)
-        password = request.form.get('password', '', type=str)
-        email = request.form.get('email', '', type=str)
-        name = request.form.get('prenom', '', type=str) + \
-            ' ' + request.form.get('nom', '', type=str)
-        gender = request.form.get('sexe', '', type=str)
-        address = request.form.get(
-            'adresse', '', type=str) + ' ' + request.form.get('zip', '', type=str)
-        profession = request.form.get('profession', '', type=str)
-
-        # filter User out of database through username
-        user = User.query.filter_by(user=username).first()
-
-        # filter User out of database through username
-        user_by_email = User.query.filter_by(email=email).first()
-
-        if user or user_by_email:
-            msg = 'Error: User exists!'
-
-        else:
-
-            pw_hash = bc.generate_password_hash(password)
-
-            user = User(username, email, pw_hash, name,
-                        gender, profession, address)
-
-            user.save()
-
-    return redirect(url_for('users'))
-
-
-@app.route('/update', methods=['GET', 'POST'])
+#update user
+@app.route('/api/user/update', methods=['GET', 'POST'])
 def update():
-    if request.method == 'POST':
-        form = request.form
-        user = User.query.filter_by(id=form.get('id')).first()
-        user.name = form.get('prenom', '', type=str) + \
-            ' ' + form.get('nom', '', type=str)
-        user.user = form.get('username', '', type=str)
-        user.email = form.get('email', '', type=str)
-        user.profession = form.get('profession', '', type=str)
-        user.gender = form.get('sexe', '', type=str)
-        user.address = form.get('address', '', type=str)
+    data = request.get_json()
+    user = User.query.filter_by(id_user=data['id']).first()
+        # assign form data to variables
+    user.username = data['username']
+    user.email=data['email']
+    user.firstName=data['firstName']
+    user.lastName = data['lastName'],
+    user.gender = data['gender'],
+    user.address = data['address'],
+    user.profession = data['profession'],
+    user.phone = data['phone'],
+    if(data['authorities']):
+        user.is_admin = 1
+    else:
+        user.is_admin=0
+    db.session.commit()
+    return jsonify({'msg':'user added successfully'})
+#delete user
+#delete product
+@app.route('/api/user/deleteUser', methods=['POST'])
+def delete_user():
+    id = request.json
+    user = User.query.get(id)
+    if user is None:
+        return jsonify({'error': 'user not found'})
+    else:
+        db.session.delete(user)
         db.session.commit()
-        flash("Utilisateur a été mis à jour")
-    return redirect(url_for('users'))
-
-
+        return jsonify({'message': 'user deleted successfully'})
 #get all products
 @app.route('/api/product/getAllProduct', methods=['GET'])
 def getProducts():
@@ -189,7 +184,6 @@ def getProducts():
 
         result.append(product_data)
     return jsonify(result)
-
 #get save a new product or update one
 @app.route('/api/product/saveProduct', methods=['GET', 'POST'])
 def saveProduct():

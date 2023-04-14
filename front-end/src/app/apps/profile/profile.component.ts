@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { format } from 'date-fns';
+import { LocalStorageService } from 'ngx-webstorage';
+import { User } from 'src/app/model/User';
+import { UserService } from 'src/app/shared/service/User.service';
 
 @Component({
   selector: 'app-profile',
@@ -7,34 +11,16 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-
-  constructor(private modalService: NgbModal) {}
+  user!:User
+  constructor(private modalService: NgbModal, private userService:UserService , private localStorageService:LocalStorageService) {}
 
   ngOnInit(): void {
+    this.userService.getUserByLogin(this.localStorageService.retrieve('login')).subscribe(data=>{
+      this.user=data
+            console.log(this.user)
+    })
+  
   }
-  
-  news = [
-        {
-          image: "assets/images/profile/5.jpg",
-          title: "Collection of textile samples",
-          description: "I shared this on my fb wall a few months back, and I thought.",
-          url: "admin/post-details",
-        },
-        {
-          image: "assets/images/profile/6.jpg",
-          title: "Collection of textile samples",
-          description: "I shared this on my fb wall a few months back, and I thought.",
-          url: "admin/post-details",
-        },
-        {
-          image: "assets/images/profile/7.jpg",
-          title: "Collection of textile samples",
-          description: "I shared this on my fb wall a few months back, and I thought.", 
-          url: "admin/post-details",
-        },
-    
-  ];
-  
   
 	
 	open(content:any) {

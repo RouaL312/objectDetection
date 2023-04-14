@@ -13,7 +13,8 @@ import { Component} from '@angular/core';
 import Validation from "../model/Validation";
 import { User } from "../model/User";
 import {UserService} from "../shared/service/User.service";
-
+import { format } from 'date-fns';
+  
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -33,7 +34,6 @@ export class LoginComponent  {
   UserGroup!: FormGroup;
   UserForm!: User;
   password: any;
-
   //FormControl
   usernameControl = new FormControl('', [
     Validators.required,
@@ -44,13 +44,13 @@ export class LoginComponent  {
   confirmPassword = new FormControl('', [
     Validators.required,
   ]);
-  nameControl = new FormControl('', [
+  firstNameControl = new FormControl('', [
     Validators.required,
   ]);
   authoritiesControl = new FormControl('', [
     Validators.required,
   ]);
-  prenomControl = new FormControl('', [
+  lastNameControl = new FormControl('', [
     Validators.required,
   ]);
   professionControl = new FormControl('', [
@@ -61,6 +61,12 @@ export class LoginComponent  {
   ]);
   genderControl = new FormControl('', [
     Validators.required,
+  ]);
+  phoneControl = new FormControl('', [
+    Validators.required,
+  ]);
+  codePostal = new FormControl('');
+  dateDeNaissance = new FormControl('', [
   ]);
   private data = '';
   userNameControle = new FormControl({value: this.data, disabled: false});
@@ -81,14 +87,17 @@ export class LoginComponent  {
     this.UserGroup = this.fb.group({
       usernameControl: ['', Validators.required],
       emailControl: ['', [Validators.required, Validators.email]],
-      prenomControl: ['', Validators.required],
+      lastNameControl: ['', Validators.required],
       passwordControl: ['', Validators.required],
-      nameControl: ['', Validators.required],
+      firstNameControl: ['', Validators.required],
       genderControl: ['', Validators.required],
       professionControl: ['', Validators.required],
       addressControl: ['', Validators.required],
       authoritiesControl: [false, Validators.required],
+      phoneControl: ['', Validators.required],
       confirmPassword: ['', Validators.required],
+      dateDeNaissanceControl: [Date],
+      codePostalControl: [''],
     }, {
       validators: [Validation.match('passwordControl', 'confirmPassword')]
     });
@@ -102,7 +111,10 @@ export class LoginComponent  {
       gender:'',
       profession:'',
       address:'',
+      phone:'',
       authorities: false,
+      dateDeNaissance:'',
+      codePostal:'',
     }
   }
   SignUp(){
@@ -178,36 +190,42 @@ export class LoginComponent  {
 		
 	}
   Register() {
-    console.log('ggg')
     if (this.UserGroup.invalid) {
-      this.messageService.add({
+     return this.messageService.add({
         severity: 'error',
-        summary: 'Probléme ajout utilisateur',
-        detail: 'Vérifier votre formulaire'
+        summary: 'Add user problem',
+        detail: 'Check your form'
       });
-      return;
     }
-    this.UserForm.firstName = this.f.nameControl.value;
-    this.UserForm.lastName = this.f.prenomControl.value;
+    this.UserForm.firstName = this.f.firstNameControl.value;
+    this.UserForm.lastName = this.f.lastNameControl.value;
     this.UserForm.username = this.f.usernameControl.value;
     this.UserForm.email = this.f.emailControl.value;
     this.UserForm.password = this.f.passwordControl.value;
     this.UserForm.profession = this.f.professionControl.value;
     this.UserForm.address = this.f.addressControl.value;
     this.UserForm.gender = this.f.genderControl.value;
-    console.log(this.UserForm);
+    this.UserForm.phone = this.f.phoneControl.value;
+    this.UserForm.codePostal = this.f.codePostalControl.value;
+    this.UserForm.dateDeNaissance = format(this.f.dateDeNaissanceControl.value, 'dd/MM/yyyy');
+    console.log(this.UserForm)
     this.userService.addUser(this.UserForm).subscribe(data => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Add user',
-        detail: 'User added successfully'
-      });
-    }, error => {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Probléme ajout utilisateur',
-        detail: 'Impossible d\'ajouter l\'utilisateur'
-      });
+      if(data.includes('Error'))
+      {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Probléme ajout utilisateur',
+          detail: data.toString()
+        });
+      }else{
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Add user',
+          detail: data.toString(),
+        });
+        this.signUp=false
+      }
+
     })
   }
 }

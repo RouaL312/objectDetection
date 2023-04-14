@@ -14,22 +14,29 @@ class User(db.Model):
     username   = db.Column(db.String(64),  unique = True)
     email    = db.Column(db.String(120), unique = True)
     password = db.Column(db.String(500))
-    name = db.Column(db.String(500))
+    firstName = db.Column(db.String(64))
+    lastName = db.Column(db.String(64))
     gender   = db.Column(db.String(8)) 
     profession = db.Column(db.String(64))
     is_admin = db.Column(db.Boolean)
     address  = db.Column(db.String(120))
     phone  = db.Column(db.String(120))
+    codePostal  = db.Column(db.String(30))
+    dateDeNaissance  = db.Column(db.DateTime)
     date_creation  = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    def __init__(self, username, email, password,name, gender, profession, address,is_admin):
-        self.username       = username
+    def __init__(self, username, email, password,firstName,lastName, gender, profession, address,is_admin,phone,codePostal,dateDeNaissance):
+        self.username   = username
         self.password   = password
         self.email      = email
         self.gender     = gender
         self.profession = profession
         self.address    = address
         self.is_admin   = is_admin
-        self.name       = name
+        self.firstName  = firstName
+        self.lastName   = lastName
+        self.phone      = phone
+        self.codePostal = codePostal
+        self.dateDeNaissance  = dateDeNaissance
     def __repr__(self):
         return '<User %r - %s - %s - %s - %s - %s- %d>' % (self.id_user, self.username, self.email, self.gender, self.profession, self.address,self.is_admin)
 
