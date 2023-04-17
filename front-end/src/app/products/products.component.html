@@ -1,0 +1,98 @@
+<!--**********************************
+	Content body start
+***********************************-->
+<p-toast></p-toast>
+
+<div class="row page-titles mx-0">
+	<div class="col-sm-6 p-md-0">
+		<div class="welcome-text">
+			<h4>Product List</h4>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-12 col-xl-6" *ngFor="let product of products">
+		<div class="card">
+			<div class="card-body">
+				<div class="row m-b-30">
+					<div class="col-md-5 col-xxl-12">
+						<div class="new-arrival-product mb-4 mb-xxl-4 mb-md-0">
+							<div class="new-arrivals-img-contnent">
+								<img *ngIf="product.previews!=null; else noImage"
+									[src]="sanitizer.bypassSecurityTrustResourceUrl(product.previews!.toString())">
+							</div>
+
+						</div>
+						<ng-template #noImage>
+							<i class="fa fa-ban " style="font-size: 190px;text-align: center;"></i>
+						</ng-template>
+					</div>
+					<div class="col-md-7 col-xxl-12">
+						<div class="new-arrival-content position-relative">
+							<h4><a [routerLink]="['/admin/ecom-product-detail']">{{product.name}}</a></h4>
+							<div class="comment-review star-rating">
+								<p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
+								<span class="review-text">({{product.rating}} reviews) / </span><a
+									class="product-review" href="javascript:void(0);" (click)="open(reviewModal)">Write
+									a review?</a>
+								<p class="price">{{product.price| currency:'USD' }}
+								</p>
+							</div>
+
+							<p>Availability: <span class="item"> {{product.inventorystatus}}
+									<i *ngIf="product.inventorystatus=='INSTOCK' || product.inventorystatus=='LOWSTOCK'"
+										class="fa fa-check-circle text-success"></i>
+									<i *ngIf="product.inventorystatus=='OUTOFSTOCK'" class="fa fa-ban text-danger"></i>
+								</span></p>
+							<p>Product code: <span class="item">{{product.code}}</span> </p>
+							<p>category: <span class="item">{{product.category}}</span></p>
+							<div>
+								<span class="price shopping-cart ">
+									<a class="btn btn-primary" href="javascript:void(0)"><i
+											class="fa fa-shopping-basket mr-2"></i>Add
+										to cart</a>
+								</span>
+							</div>
+							<p class="text-content">{{product.description}}</p>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- review -->
+
+	<ng-template #reviewModal let-modal>
+		<div class="modal-header">
+			<h4 class="modal-title" id="modal-basic-title">Review</h4>
+			<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<form>
+				<div class="text-center mb-4">
+					<img class="img-fluid rounded" width="78" src="assets/images/avatar/1.jpg" alt="DexignZone">
+				</div>
+				<div class="form-group">
+					<div class="rating-widget mb-4 text-center">
+						<!-- Rating Stars Box -->
+						<ngb-rating [max]="5"></ngb-rating>
+					</div>
+				</div>
+				<div class="form-group">
+					<textarea class="form-control" placeholder="Comment" rows="5"></textarea>
+				</div>
+				<button class="btn btn-success btn-block">RATE</button>
+			</form>
+		</div>
+
+	</ng-template>
+
+
+</div>
+<!--**********************************
+	Content body end
+***********************************-->

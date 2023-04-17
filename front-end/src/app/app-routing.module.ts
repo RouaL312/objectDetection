@@ -14,6 +14,7 @@ import { InvoiceComponent } from './apps/shop/invoice/invoice.component';
 import { EditProductsComponent } from './products/edit-products/edit-products.component';
 import { OrderComponent } from './apps/shop/order/order.component';
 import { RecognitionComponent } from './recognition/recognition.component';
+import { ProductDetailsComponent } from './products/product-details/product-details.component';
 
 
 const routes: Routes = [
@@ -30,7 +31,8 @@ const routes: Routes = [
       {path: 'invoices',component: InvoiceComponent},
       {path: 'Editproducts',component: EditProductsComponent},
       {path: 'orders',component: OrderComponent},
-      {path: 'recognition',component: RecognitionComponent}
+      {path: 'recognition',component: RecognitionComponent},
+      {path: 'ecom-product-detail',component: ProductDetailsComponent}
     ]},
 
 

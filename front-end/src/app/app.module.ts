@@ -128,6 +128,7 @@ import {InputNumberModule} from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { RecognitionComponent } from './recognition/recognition.component';
+import { ProductDetailsComponent } from './products/product-details/product-details.component';
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
   timeGridPlugin,
@@ -166,6 +167,7 @@ FullCalendarModule.registerPlugins([
     ProductsComponent,
     EditProductsComponent,
     RecognitionComponent,
+    ProductDetailsComponent,
   ],
   imports: [
     MatDatepickerModule,

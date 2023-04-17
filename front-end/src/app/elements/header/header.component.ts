@@ -25,7 +25,12 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     // @ts-ignore
     this.username = this.localStorageService.retrieve("login");
-    this.role = this.localStorageService.retrieve('roles');
+    if(this.localStorageService.retrieve('authorities'))
+     {
+      this.role='Admin'
+     }else{
+      this.role='Client'
+     }
   }
 
   logout() {

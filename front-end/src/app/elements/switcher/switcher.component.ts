@@ -23,14 +23,14 @@ export class SwitcherComponent implements OnInit {
 
       this.route.queryParams
       .subscribe(params => {
-        // console.log(params);
+        console.log(params.themename);
 
         if(params.direction =="undefined" || params.direction == "" || params.direction == null) {
             this.themedir = 'ltr';
         } else {
             this.themedir = params.direction;
         }
-
+        this.themeSettings('data-primary','color_14')
         if(params.themename !="" && (params.themename <= 5 && params.themename > 0)) {
             this.themename = 'dezThemeSet'+params.themename;
             this.themeDemoSettings(this.themename, this.themedir);
