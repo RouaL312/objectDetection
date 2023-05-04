@@ -70,7 +70,7 @@ export class AuthService {
   }
 
   isAuthenticated() {
-    return this.localStorageService.retrieve('login') != null;
+    return this.localStorageService.retrieve('token') != null;
   }
 
   getToken() {

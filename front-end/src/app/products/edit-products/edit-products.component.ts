@@ -44,12 +44,18 @@ export class EditProductsComponent implements OnInit {
   disableCode !:boolean;
 
   status: string[] = ['OUTOFSTOCK', 'INSTOCK', 'LOWSTOCK'];
-
+  i: any
   constructor(private productService: ProductService, private messageService: MessageService,
     private confirmationService: ConfirmationService, public sanitizer: DomSanitizer, private uploadService: FileUploadService) { }
 
   ngOnInit() {
-    this.productService.getProducts().subscribe(data => this.products = data);
+    this.productService.getProducts().subscribe(data => {
+      this.products = data
+      for (this.i = 0; this.i < this.products.length; this.i++) {
+        this.getImageProduct(this.products[this.i])
+      }
+    }
+    );
   }
   filterGlobal(event: any) {
     const inputElement = event.target as HTMLInputElement;
@@ -92,22 +98,25 @@ export class EditProductsComponent implements OnInit {
     if (product.id != null && product.url_image_prod!=null) {
       return this.uploadService.getImage(product.id).subscribe(data => {
         this.imageProduct = data
-        this.createImageFromBlob(data);
+        this.createImageFromBlob(data,product);
       }, error => {
         this.messageService.add({severity: 'error', summary: 'Image problem', detail:'Product image is missing'});
         this.previews=null
+        product.previews=this.previews
       });
     } else {
       this.previews=null
       return;
     }
   }
-  createImageFromBlob(image: Blob) {
+  createImageFromBlob(image: Blob,product:Product) {
     let reader = new FileReader();
     reader.addEventListener("load", () => {
       this.previews = reader.result;
+      product.previews=this.previews
       reader.onload = (e: any) => {
         this.previews = e.target.result;
+        product.previews=this.previews
       };
     }, false);
     if (image) {
@@ -177,6 +186,9 @@ export class EditProductsComponent implements OnInit {
             }
           }, error => {
           });
+          this.productService.getProducts().subscribe(data => {
+            this.products=data
+          })
           this.products = [...this.products];
           this.productDialog = false;
           this.previews = null;
@@ -203,6 +215,7 @@ export class EditProductsComponent implements OnInit {
                 },
               });
             }
+            
             this.products = [...this.products];
             this.productDialog = false;
             this.previews = null;

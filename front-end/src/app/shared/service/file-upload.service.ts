@@ -21,7 +21,7 @@ export class FileUploadService {
       const formData: FormData = new FormData();
 
       formData.append('file', file);
-      formData.append('code', product.code);
+      formData.append('code', String(product.code));
       const req = new HttpRequest('POST', `${this.baseUrl + '/api/product/upload'}?code=${product.code}`, formData, {
         reportProgress: true,
         responseType: 'json'

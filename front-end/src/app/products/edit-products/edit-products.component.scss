@@ -163,13 +163,13 @@
 		transition: all 0.3s ease;
 		&:after {
 			font-family: FontAwesome;
-			content: "\f007";
+			content: "\FFFD";
 			top: 0;
 			left: 0;
 			width: 100%;
 			height: 100%;
 			position: absolute;
-			font-size: 190px;
+			font-size: 120px;
 			background: #ecf0f1;
 			color: #34495e;
 			text-align: center;

@@ -15,11 +15,12 @@ import { EditProductsComponent } from './products/edit-products/edit-products.co
 import { OrderComponent } from './apps/shop/order/order.component';
 import { RecognitionComponent } from './recognition/recognition.component';
 import { ProductDetailsComponent } from './products/product-details/product-details.component';
+import { CheckBillComponent } from './check-bill/check-bill.component';
 
 
 const routes: Routes = [
-  {path: '', redirectTo: 'login', pathMatch: 'full'},
-  { path: 'login', component: LoginComponent},
+  {path: '', redirectTo: 'admin', pathMatch: 'full'},
+  { path: 'login', component: LoginComponent,canActivate: [LoginGuardService]},
 
   { path: 'admin', component: LayoutsComponent, canActivate: [AuthGuard], children: [
       { path: '', component: AdminComponent},
@@ -30,11 +31,11 @@ const routes: Routes = [
       {path: 'products',component: ProductsComponent},
       {path: 'invoices',component: InvoiceComponent},
       {path: 'Editproducts',component: EditProductsComponent},
-      {path: 'orders',component: OrderComponent},
+      {path: 'orders',component: CheckBillComponent},
       {path: 'recognition',component: RecognitionComponent},
       {path: 'ecom-product-detail',component: ProductDetailsComponent}
+      
     ]},
-
 
 
 ];

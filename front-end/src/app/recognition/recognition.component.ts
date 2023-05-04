@@ -1,4 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { VideoFeedService } from '../shared/service/video-feed.service';
+import { HttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-recognition',
@@ -7,33 +11,41 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 })
 export class RecognitionComponent implements OnInit {
 
-  @ViewChild('video')
-  public video!: ElementRef;
 
-  @ViewChild('canvas')
-  public canvas!: ElementRef;
+  constructor(private videoFeedService: VideoFeedService, private messageService:MessageService) { }
+  videoFeedUrl = '';
+  imageSrc = '';
+  spinner:boolean = false;
+  ngOnInit(): void {
 
-  public captures: Array<any>;
-
-  constructor() {
-    this.captures = [];
   }
 
-  public ngOnInit() {}
+  startCameraForObjectDetection(): void {
+    this.spinner=true;
+    this.imageSrc = 'http://localhost:5000/api/video_feed';
+    this.spinner=false;
 
-  public ngAfterViewInit() {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-        this.video.nativeElement.srcObject = stream;
-        this.video.nativeElement.play();
-      });
-    }
+
   }
 
-  public capture() {
-    const context = this.canvas.nativeElement.getContext('2d').drawImage(this.video.nativeElement, 0, 0, 640, 480);
-    const image = this.canvas.nativeElement.toDataURL('image/png');
-    this.captures.push(image);
+  addToCart(): void {
+    // Send a GET request to the server to add an item to the cart
+    this.videoFeedService.addToCart().subscribe(data=>{
+      console.log('add to cart')
+      console.log(data)
+      this.messageService.add({severity: 'success', summary: 'Service Message', detail: 'Via MessageService'});
+
+      //this.shoppingCartService.addItem(item, quantity);
+
+    })
+  }
+
+  removeFromCart(): void {
+    // Send a GET request to the server to remove an item from the cart
+  }
+
+  checkBill(): void {
+    // Navigate to the checkout page
   }
 
 }

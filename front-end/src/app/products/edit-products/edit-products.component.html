@@ -47,14 +47,19 @@
                             </td>
                             <td>{{product.name}}</td>
                             <td>
-                                <img [src]="sanitizer.bypassSecurityTrustResourceUrl('../../../../../../Imagess/'+product.url_image_prod)" [alt]="product.name" width="100" class="shadow-4" />
+
+                                <img *ngIf="product.previews!=null; else noImage"
+                                    [src]="sanitizer.bypassSecurityTrustResourceUrl(product.previews!.toString())"
+                                    [alt]="product.name" width="100" class="shadow-4">
+                                <ng-template #noImage>
+                                    <i style="font-size: 50px;text-align: center;"></i>
+                                </ng-template>
                             </td>
                             <td>{{product.price | currency:'USD'}}</td>
                             <td>{{product.category}}</td>
                             <td><p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
                             </td>
-                            <td><span
-                                    >{{product.inventorystatus}}</span>
+                            <td><span>{{product.inventorystatus}}</span>
                             </td>
                             <td>
                                 <button pButton pRipple icon="pi pi-pencil"
@@ -79,17 +84,20 @@
         <ng-template pTemplate="content">
             <div class="p-field">
                 <div class="avatar-wrapper">
-                    <img *ngIf="previews!=null; else noImage"
-                        [src]="sanitizer.bypassSecurityTrustResourceUrl(previews!.toString())" class="profile-pic">
-                    <ng-template #noImage>
-                        <img [src]="previews" class="profile-pic">
+                    <img *ngIf="previews!=null else noImage" [src]="sanitizer.bypassSecurityTrustResourceUrl(previews!.toString())"  class="profile-pic">
+    
+                    <ng-template #noImage class="profile-pic">
+                      <img  [src]="previews"  class="profile-pic">
+    
                     </ng-template>
                     <div class="upload-button">
-                        <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-                        <input id="fileInput" name="fileInput" class="file-upload" type="file" accept="image/*"
-                            (change)="selectFiles($event,product)" />
+                      <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+                      <input id="fileInput"
+                             name="fileInput"
+                             class="file-upload" type="file" accept="image/*" (change)="selectFiles($event,product)"/>
                     </div>
-                </div>
+                  </div>
+               
             </div>
             <div class="p-field">
                 <label for="code">Code</label>
@@ -109,8 +117,7 @@
             </div>
             <div class="p-field">
                 <label for="rating">review</label>
-                <p-inputNumber id="rating" [(ngModel)]="product.rating" 
-                    cols="20"></p-inputNumber>
+                <p-inputNumber id="rating" [(ngModel)]="product.rating" cols="20"></p-inputNumber>
             </div>
             <div class="p-field">
                 <label for="inventorystatus">inventory Status</label>

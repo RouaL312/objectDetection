@@ -640,7 +640,7 @@
                     <li class="nav-item dropdown notification_dropdown  dropdown-no-icon" ngbDropdown>
                         <a class="nav-link  ai-icon" href="javascript:void(0);" role="button" data-toggle="dropdown"
                             ngbDropdownToggle>
-                            <div class="pulse-css"></div>
+                            <div class="pulse-css" style="color: aliceblue;font-size: small;">{{cards.length}}</div>
                             <a class="ai-icon" aria-expanded="false">
                                 <i class="pi pi-shopping-cart"></i>
                             </a>
@@ -649,71 +649,31 @@
                             <div id="DZ_W_Notification1" class="widget-media dz-scroll p-3 height380"
                                 [perfectScrollbar]>
                                 <ul class="timeline">
-                                    <li>
+                                    <li *ngFor="let item of cards">
                                         <div class="timeline-panel">
-                                            <div class="media mr-2">
-                                                <img alt="image" width="50" src="assets/images/avatar/1.jpg">
+                                            <div class="media mr-1">
+                                                <img *ngIf="item.product.previews!=null; else noImage" width="50"
+                                                    [src]="sanitizer.bypassSecurityTrustResourceUrl(item.product.previews!.toString())">
                                             </div>
+                                            <ng-template #noImage>
+                                                <i class="fa fa-question "
+                                                    style="font-size: 100px;text-align: center;"></i>
+                                            </ng-template>
+
                                             <div class="media-body">
-                                                <h6 class="mb-1">Dr sultads Send you Photo</h6>
-                                                <small class="d-block">29 July 2020 - 02:26 PM</small>
+                                                <h6 class="mb-1">{{item.product.name}}</h6>
+                                                <small class="d-block">Unit price: {{item.product.price |
+                                                    currency:'USD'}}</small>
+                                                <small class="d-block">Total Quantity: {{item.quantity}}</small>
+                                            </div>
+                                            <div class="media-body comment-review star-rating">
+
+                                                <p style="text-align: right;">{{item.product.price * item.quantity |
+                                                    currency:'USD' }}
+                                                </p>
                                             </div>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="timeline-panel">
-                                            <div class="media mr-2 media-info">
-                                                KG
-                                            </div>
-                                            <div class="media-body">
-                                                <h6 class="mb-1">Resport created successfully</h6>
-                                                <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="timeline-panel">
-                                            <div class="media mr-2 media-success">
-                                                <i class="fa fa-home"></i>
-                                            </div>
-                                            <div class="media-body">
-                                                <h6 class="mb-1">Reminder : Treatment Time!</h6>
-                                                <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="timeline-panel">
-                                            <div class="media mr-2">
-                                                <img alt="image" width="50" src="assets/images/avatar/1.jpg">
-                                            </div>
-                                            <div class="media-body">
-                                                <h6 class="mb-1">Dr sultads Send you Photo</h6>
-                                                <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="timeline-panel">
-                                            <div class="media mr-2 media-danger">
-                                                KG
-                                            </div>
-                                            <div class="media-body">
-                                                <h6 class="mb-1">Resport created successfully</h6>
-                                                <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="timeline-panel">
-                                            <div class="media mr-2 media-primary">
-                                                <i class="fa fa-home"></i>
-                                            </div>
-                                            <div class="media-body">
-                                                <h6 class="mb-1">Reminder : Treatment Time!</h6>
-                                                <small class="d-block">29 July 2020 - 02:26 PM</small>
-                                            </div>
-                                        </div>
+
                                     </li>
                                 </ul>
                             </div>

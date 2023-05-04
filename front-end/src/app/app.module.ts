@@ -129,6 +129,11 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { RecognitionComponent } from './recognition/recognition.component';
 import { ProductDetailsComponent } from './products/product-details/product-details.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { CheckBillComponent } from './check-bill/check-bill.component';
+import { TreeModule } from 'primeng/tree';
+import { TreeSelectModule } from 'primeng/treeselect';
+import { TreeTableModule } from 'primeng/treetable';
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
   timeGridPlugin,
@@ -168,10 +173,12 @@ FullCalendarModule.registerPlugins([
     EditProductsComponent,
     RecognitionComponent,
     ProductDetailsComponent,
+    CheckBillComponent,
   ],
   imports: [
     MatDatepickerModule,
     CalendarModule,
+    ProgressSpinnerModule,
     SliderModule,
     MultiSelectModule,
     ContextMenuModule,
@@ -263,8 +270,9 @@ FullCalendarModule.registerPlugins([
     SweetAlert2Module.forRoot(),
     ConfirmDialogModule,
     DataViewModule,
-
-    
+    TreeModule,
+    TreeSelectModule,
+    TreeTableModule,
   ],
   providers: [
     AuthGuard,

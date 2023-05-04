@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 
 import random
-
 import numpy as np
 from sqlalchemy import desc, not_
 from operator import itemgetter
@@ -12,14 +11,14 @@ import os
 import logging
 import subprocess
 # Flask modules
-from flask import Config, render_template, request, send_file, session, url_for, redirect, send_from_directory, flash, jsonify
+from flask import Config, render_template, request, send_file, session, url_for, redirect, send_from_directory, flash, jsonify,Response
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.exceptions import HTTPException, NotFound, abort
 from flask.views import MethodView
 from datetime import datetime, timedelta
 # App modules
-from app import app, lm, db, bc
-from app.models import Product, User
+from app import app, lm, db, bc, webdetect
+from app.models import CommandeVente, LigneCommande, Product, User
 from app.forms import LoginForm, RegisterForm
 #jwt
 import jwt
@@ -259,6 +258,8 @@ def getImage():
             return jsonify({'error': 'Product image is missing'}), 500
     else:
         return jsonify({'error': 'Product image is missing'}), 400
+    
+
 #save a product image
 @app.route('/api/product/upload', methods=['POST'])
 def uploadProductImage():
@@ -295,3 +296,31 @@ def delete_product():
         db.session.delete(product)
         db.session.commit()
         return jsonify({'message': 'Product deleted successfully'})
+    
+#--------------- object detection --------------------
+#open camera for object detection
+@app.route('/api/video_feed', methods=['GET','POST']) #take video feed from cam to browser
+def video_feed():
+    print("""Video streaming route. Put this in the src attribute of an img tag.""")
+    return Response(webdetect.gen(),mimetype='multipart/x-mixed-replace; boundary=frame')
+
+#add to card
+@app.route('/api/add_to_cart', methods=['GET'])# function to add item to cart for billing
+def add_to_cart():
+	from app import yolo
+	classids,boxes=yolo.detectionofkstore() #return detected class and area of contures
+	print('item detected add to cart',classids,boxes)
+	from app import add_to_cart
+	id_commande_vente=add_to_cart.cartdb(classids,boxes) #item added to bill 
+	print('added to cart')
+    # Create an array with int64 data type
+
+    # Convert the int64 array to a standard Python integer array
+	return jsonify({'id_commande_vente': id_commande_vente})
+
+#get all commande vente
+@app.route('/api/commande_vente', methods=['GET'])# function to add item to cart for billing
+def get_commande_vente_with_ligne_commande():
+    commandes_vente =db.session.query(CommandeVente, LigneCommande, Product).join(LigneCommande, CommandeVente.fk_ligne_commande_vente == LigneCommande.id_ligne_cmd).join(Product, Product.code == LigneCommande.fk_product).all()
+    print('------result ---',commandes_vente)
+    return jsonify([dict(c.as_dict(), **l.as_dict(),**p.as_dict()) for c, l, p in commandes_vente])

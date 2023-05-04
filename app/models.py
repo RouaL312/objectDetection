@@ -67,7 +67,7 @@ class Product(db.Model):
     __tablename__ = 't_product'
 
     id = db.Column(db.Integer, db.Sequence('t_product_id_seq'), primary_key=True, server_default=db.text("nextval('t_product_id_seq'::regclass)"))
-    code = db.Column(db.String(20), nullable=False, unique=True)
+    code = db.Column(db.Integer, nullable=False, unique=True)
     name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text)
     url_image_prod = db.Column(db.String(200), nullable=False)
@@ -99,9 +99,19 @@ class Product(db.Model):
         # commit change and save the object
         db.session.commit( )
         return self 
+    
     def get(filter):
         products=db.query.all()
-        return (products)    
+        return (products)   
+    
+    def as_dict(self):
+        product_dict = {}
+        product_dict['id'] = self.id
+        product_dict['code'] = self.code
+        product_dict['name'] = self.name
+        product_dict['category'] = self.category
+        product_dict['price'] = self.price
+        return product_dict
 
 class ImageProduct(db.Model):
     __tablename__ = 't_imageproduct'
@@ -121,6 +131,25 @@ class ImageProduct(db.Model):
 
     def __repr__(self):
         return f"ImageProduct(id={self.id}, filename='{self.filename}', filetype='{self.filetype}', filesize={self.filesize}, filepath='{self.filepath}')"
+class CartDB(db.Model):
+    __tablename__ = 'cartdb'
+    itemid = db.Column(db.Integer,db.Sequence('t_cart_id_seq'), primary_key=True, server_default=db.text("nextval('t_cart_id_seq'::regclass)"))
+    size = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, itemid, size):
+        self.itemid = itemid
+        self.size = size
+    
+    def __repr__(self):
+        return f"<CartDB itemid={self.itemid} size={self.size}>"
+    
+    def save(self):
+        # inject self into db session    
+        db.session.add ( self )
+
+        # commit change and save the object
+        db.session.commit( )
+        return self 
 
 class MyModelView(ModelView):
     def is_accessible(self):
@@ -130,3 +159,63 @@ class MyModelView(ModelView):
         return "You're not authorized to use the admin dashboard"
 
 admin.add_view(MyModelView(User, db.session))
+
+class CommandeVente(db.Model):
+
+    __tablename__ = 't_commande_vente'
+    id_commande_vente = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    montant_totale = db.Column(db.Numeric(precision=19, scale=10))
+    fk_ligne_commande_vente = db.Column(db.Integer, db.ForeignKey('t_ligne_commande.id_ligne_cmd'))
+    date_creation  = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    
+    def __init__(self, montant_totale ,fk_ligne_commande_vente):
+        self.montant_totale = montant_totale
+        self.fk_ligne_commande_vente = fk_ligne_commande_vente
+
+    def __repr__(self):
+        return f"CommandeVente(id_commande_vente={self.id_commande_vente}, montant_totale={self.montant_totale},fk_ligne_commande_vente={self.fk_ligne_commande_vente})"
+    def as_dict(self):
+        return {
+            'id_commande_vente': self.id_commande_vente,
+            'montant_total_cmd': self.montant_totale,
+            'fk_ligne_commande_vente': self.fk_ligne_commande_vente
+        }
+    def save(self):
+        # inject self into db session    
+        db.session.add ( self )
+        print('------self-------',self)
+        # commit change and save the object
+        db.session.commit()
+        return self 
+
+class LigneCommande (db.Model):
+
+    __tablename__ = 't_ligne_commande'
+    id_ligne_cmd = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    montant_total = db.Column(db.Numeric(precision=19, scale=10))
+    quantite = db.Column(db.Integer, nullable=False)
+    fk_product = db.Column(db.Integer, db.ForeignKey('t_product.id'))
+    date_creation  = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __init__(self, montant_total, quantite, fk_product):
+        self.montant_total = montant_total
+        self.quantite = quantite
+        self.fk_product = fk_product
+
+    def __repr__(self):
+        return f"LigneCommande(id_ligne_cmd={self.id_ligne_cmd}, montant_total={self.montant_total}, quantite={self.quantite}, fk_product={self.fk_product})"
+    def save(self):
+        # inject self into db session    
+        db.session.add ( self )
+        print('------self-------',self)
+        # commit change and save the object
+        db.session.commit()
+        return self 
+    
+    def as_dict(self):
+        return {
+            'id_ligne_cmd': self.id_ligne_cmd,
+            'montant_total_ligne': self.montant_total,
+            'quantite': self.quantite,
+            'code_produit': self.fk_product
+        }

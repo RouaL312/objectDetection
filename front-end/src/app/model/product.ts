@@ -1,9 +1,9 @@
 export class Product {
     id!:number;
-    code!:string;
+    code!:number;
     name!:string;
     description?:string;
-    price?:number;
+    price:number=0;
     quantity?:number;
     inventorystatus?:string;
     category?:string;

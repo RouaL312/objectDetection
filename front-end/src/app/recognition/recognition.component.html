@@ -1,5 +1,32 @@
-<div>
-  <video #video autoplay></video>
-  <button (click)="capture()">Capture</button>
-  <canvas #canvas></canvas>
-</div>    
+<p-progressSpinner *ngIf="spinner" aria-label="Loading"></p-progressSpinner>
+<p-toast></p-toast>
+<div class="row" >
+
+  <div class="card" *ngIf="imageSrc!=''; else noImage">
+    <div class="card-body">
+    <span class="price shopping-cart ">
+        <a class="btn btn-primary" href="javascript:void(0)" (click)="addToCart()"><i
+          class="pi pi-shopping-cart mr-2" ></i>Add
+        to cart</a>
+        <a class="btn btn-primary" style="margin:5px" href="javascript:void(0)" (click)="removeFromCart()"><i
+          class="pi pi-trash mr-2" ></i>Remove from cart</a>
+      <a class="btn btn-primary" href="javascript:void(0)" (click)="checkBill()"><i
+          class="pi pi-dollar mr-2"  ></i>check Bill</a>
+    </span>
+  </div>
+
+  <img [src]="imageSrc">
+</div>
+</div>
+<div class="row">
+  <div class="card">
+  </div>
+</div>
+<ng-template #noImage  >
+  <div *ngIf="spinner==false" style="display: flex;align-items: center;">
+    <p-button  styleClass="p-button-rounded p-button-secondary p-button-text p-button-raised" (click)="startCameraForObjectDetection()">
+      <i class="pi pi-play " style="font-size: 1.5rem" > </i>
+       Start Camera For Object Detection
+    </p-button>
+  </div>
+</ng-template>
