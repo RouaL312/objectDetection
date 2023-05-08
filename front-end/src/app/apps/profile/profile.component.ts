@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-import { format } from 'date-fns';
+import {NgbModal, } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageService } from 'ngx-webstorage';
 import { User } from 'src/app/model/User';
 import { UserService } from 'src/app/shared/service/User.service';
+import { Title } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-profile',
@@ -12,7 +12,9 @@ import { UserService } from 'src/app/shared/service/User.service';
 })
 export class ProfileComponent implements OnInit {
   user!:User
-  constructor(private modalService: NgbModal, private userService:UserService , private localStorageService:LocalStorageService) {}
+  constructor(private modalService: NgbModal, private userService:UserService , private localStorageService:LocalStorageService,private title :Title) {
+    title.setTitle('Profil')
+  }
 
   ngOnInit(): void {
     this.userService.getUserByLogin(this.localStorageService.retrieve('login')).subscribe(data=>{

@@ -8,6 +8,7 @@ import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "
 import Validation from "../model/Validation";
 import {MatCheckboxChange} from "@angular/material/checkbox";
 import { format } from 'date-fns';
+import { Title } from '@angular/platform-browser';
 
 
 let USERS: User[] = [];
@@ -72,8 +73,8 @@ export class UsersComponent implements OnInit {
   ]);
   editPassword!: boolean;
   constructor(private modalService: NgbModal, private userService: UserService, private formBuilder: FormBuilder,
-              private localStorageService: LocalStorageService, private confirmationService: ConfirmationService,
-              private messageService: MessageService) {
+              private localStorageService: LocalStorageService, private confirmationService: ConfirmationService,private messageService: MessageService,private titre :Title) {
+                titre.setTitle('Users')
     this.UserGroup = this.formBuilder.group({
       usernameControl: ['', Validators.required],
       emailControl: ['', [Validators.required, Validators.email]],

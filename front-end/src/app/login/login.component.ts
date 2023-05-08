@@ -163,7 +163,7 @@ export class LoginComponent  {
             admin = data.is_admin;
             this.messageService.add({severity: 'success', summary: 'Service Message', detail: 'Via MessageService'});
             this.router.navigateByUrl('/admin');
-            this.soundService.playAudio('../assets/sounds/intro.wav');
+            //this.soundService.playAudio('../assets/sounds/intro.wav');
 
         } else {
           this.messageService.add({

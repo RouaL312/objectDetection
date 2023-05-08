@@ -11,7 +11,7 @@ import {LocalStorageService} from "ngx-webstorage";
 export class NavigationComponent implements OnInit {
     username!:string;
     roles!:boolean;
-    role!:string;
+    role!:boolean;
     public currentHref: string = "";
 
 
@@ -28,11 +28,11 @@ export class NavigationComponent implements OnInit {
 
     ngOnInit(): void {
       this.username=this.localStorageService.retrieve("login");
-      if(this.localStorageService.retrieve('authorities'))
+      if(this.localStorageService.retrieve('authorities')==true)
       {
-       this.role='ADMIN'
+       this.role=true
       }else{
-       this.role='CLIENT'
+       this.role=false
       }
     }
 

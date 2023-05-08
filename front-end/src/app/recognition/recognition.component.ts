@@ -1,8 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl, Title } from '@angular/platform-browser';
 import { VideoFeedService } from '../shared/service/video-feed.service';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
+import { ShoppingCartService } from '../shared/service/shopping-cart.service';
+import { ProductService } from '../shared/service/product.service';
 
 @Component({
   selector: 'app-recognition',
@@ -12,7 +14,10 @@ import { MessageService } from 'primeng/api';
 export class RecognitionComponent implements OnInit {
 
 
-  constructor(private videoFeedService: VideoFeedService, private messageService:MessageService) { }
+  constructor(private videoFeedService: VideoFeedService, private messageService:MessageService,
+    private shoppingCartService:ShoppingCartService,private productService:ProductService,private title :Title) {
+      title.setTitle('Recognition')
+     }
   videoFeedUrl = '';
   imageSrc = '';
   spinner:boolean = false;
@@ -29,13 +34,25 @@ export class RecognitionComponent implements OnInit {
   }
 
   addToCart(): void {
+    const code_product1 = '4';
+    const codeProductNumber1 = parseInt(code_product1);
+    console.log(codeProductNumber1); // Output: 4
     // Send a GET request to the server to add an item to the cart
     this.videoFeedService.addToCart().subscribe(data=>{
+
+
       console.log('add to cart')
       console.log(data)
-      this.messageService.add({severity: 'success', summary: 'Service Message', detail: 'Via MessageService'});
+      this.messageService.add({severity: 'success', summary: 'Service Message', detail: 'Via MessageService'})
+      for ( let i =0; i<data.length;i++){
+        const code_product = data[i].code_product;
+        const codeProductNumber = parseInt(code_product);
+        console.log(codeProductNumber); 
+        this.productService.getProductByCode(codeProductNumber).subscribe(prod=>{
+           this.shoppingCartService.addItem(prod, data.quantite);
+        })
+      }
 
-      //this.shoppingCartService.addItem(item, quantity);
 
     })
   }

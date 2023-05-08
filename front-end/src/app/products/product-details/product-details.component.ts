@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -8,7 +9,9 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 })
 export class ProductDetailsComponent implements OnInit {
 
-  constructor(private modalService: NgbModal) {}
+  constructor(private modalService: NgbModal,private title :Title) {
+    this.title.setTitle('Products')
+  }
   
   imageSrc = 'assets/images/product/1.jpg';
   

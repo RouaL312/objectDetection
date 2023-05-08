@@ -20,7 +20,7 @@ export class VideoFeedService {
   getVideoFeedUrl(): Observable<any>{
     return this.http.options(this.baseUrl + '/api/video_feed',{ responseType: 'blob' });
   }
-  addToCart() {
+  addToCart(): Observable<any> {
     return this.http.get(this.baseUrl + '/api/add_to_cart');
   }
 }

@@ -15,7 +15,7 @@
           <span class="nav-text">Orders</span>
         </a>
       </li>
-      <li class="{{(currentHref == '/admin/users') ? 'mm-active' : ''}}">
+      <li *ngIf="role" class="{{(currentHref == '/admin/users') ? 'mm-active' : ''}}">
         <a [routerLink]="['/admin/users']"
            class="ai-icon {{(currentHref == '/admin/users') ? 'mm-active' : ''}}" aria-expanded="false">
           <i class="pi pi-user-plus"></i>
@@ -29,7 +29,7 @@
           <span class="nav-text">Recognition</span>
         </a>
       </li>
-      <li class="{{(currentHref == '/admin/Editproducts') ? 'mm-active' : ''}}">
+      <li *ngIf="role" class="{{(currentHref == '/admin/Editproducts') ? 'mm-active' : ''}}">
         <a [routerLink]="['/admin/Editproducts']"  class="ai-icon {{(currentHref == '/admin/Editproducts') ? 'mm-active' : ''}}" aria-expanded="false">
           <i class="flaticon-381-layer-1"></i>
           <span class="nav-text">Products</span>

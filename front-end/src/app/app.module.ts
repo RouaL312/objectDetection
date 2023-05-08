@@ -134,6 +134,8 @@ import { CheckBillComponent } from './check-bill/check-bill.component';
 import { TreeModule } from 'primeng/tree';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { TreeTableModule } from 'primeng/treetable';
+import { CurrencyPipe } from '@angular/common';
+
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
   timeGridPlugin,
@@ -275,6 +277,7 @@ FullCalendarModule.registerPlugins([
     TreeTableModule,
   ],
   providers: [
+    CurrencyPipe,
     AuthGuard,
     UserService,
     LoginGuardService,

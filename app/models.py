@@ -163,27 +163,33 @@ admin.add_view(MyModelView(User, db.session))
 class CommandeVente(db.Model):
 
     __tablename__ = 't_commande_vente'
-    id_commande_vente = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    montant_totale = db.Column(db.Numeric(precision=19, scale=10))
-    fk_ligne_commande_vente = db.Column(db.Integer, db.ForeignKey('t_ligne_commande.id_ligne_cmd'))
-    date_creation  = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    
-    def __init__(self, montant_totale ,fk_ligne_commande_vente):
-        self.montant_totale = montant_totale
-        self.fk_ligne_commande_vente = fk_ligne_commande_vente
+    id_commande_vente = db.Column(db.Integer, primary_key=True)
+    date_creation = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    montant_total = db.Column(db.Float, nullable=False)
+    login = db.Column(db.String(20), db.ForeignKey('t_user.username'), nullable=False)
+    lignes_commande = db.relationship('CommandeLigne', back_populates='commande_vente')
+
+    def __init__(self, montant_total,login, lignes_commande=None):
+        self.montant_total = montant_total
+        self.login=login
+        if lignes_commande is not None:
+            self.lignes_commande = lignes_commande
 
     def __repr__(self):
-        return f"CommandeVente(id_commande_vente={self.id_commande_vente}, montant_totale={self.montant_totale},fk_ligne_commande_vente={self.fk_ligne_commande_vente})"
+        return f"<CommandeVente(id_commande_vente='{self.id_commande_vente}', date_creation='{self.date_creation}', montant_total='{self.montant_total},login={self.login}')>"
+
     def as_dict(self):
         return {
             'id_commande_vente': self.id_commande_vente,
-            'montant_total_cmd': self.montant_totale,
-            'fk_ligne_commande_vente': self.fk_ligne_commande_vente
+            'montant_total': self.montant_total,
+            'date_creation': str(self.date_creation),
+            'lignes_commande': [lc.as_dict() for lc in self.lignes_commande],
+            'login': self.login
         }
     def save(self):
+        print(self)
         # inject self into db session    
         db.session.add ( self )
-        print('------self-------',self)
         # commit change and save the object
         db.session.commit()
         return self 
@@ -191,31 +197,65 @@ class CommandeVente(db.Model):
 class LigneCommande (db.Model):
 
     __tablename__ = 't_ligne_commande'
-    id_ligne_cmd = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    montant_total = db.Column(db.Numeric(precision=19, scale=10))
-    quantite = db.Column(db.Integer, nullable=False)
-    fk_product = db.Column(db.Integer, db.ForeignKey('t_product.id'))
-    date_creation  = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    id_ligne_cmd = db.Column(db.Integer, primary_key=True)
+    fk_product = db.Column(db.Integer, db.ForeignKey('t_product.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    price_unitaire = db.Column(db.Float, nullable=False)
+    commande_ligne = db.relationship('CommandeLigne', back_populates='ligne_commande')
 
-    def __init__(self, montant_total, quantite, fk_product):
-        self.montant_total = montant_total
-        self.quantite = quantite
+    date_creation  = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    product = db.relationship('Product', backref='lignes_commande')
+    def __init__(self, fk_product, quantity, price_unitaire):
         self.fk_product = fk_product
+        self.quantity = quantity
+        self.price_unitaire = price_unitaire
 
     def __repr__(self):
-        return f"LigneCommande(id_ligne_cmd={self.id_ligne_cmd}, montant_total={self.montant_total}, quantite={self.quantite}, fk_product={self.fk_product})"
-    def save(self):
-        # inject self into db session    
-        db.session.add ( self )
-        print('------self-------',self)
-        # commit change and save the object
-        db.session.commit()
-        return self 
-    
+        return f"LigneCommande(id_ligne_cmd={self.id_ligne_cmd}, fk_product={self.fk_product}, quantity={self.quantity}, price_unitaire={self.price_unitaire})"
+
     def as_dict(self):
         return {
             'id_ligne_cmd': self.id_ligne_cmd,
-            'montant_total_ligne': self.montant_total,
-            'quantite': self.quantite,
-            'code_produit': self.fk_product
+            'fk_product': self.fk_product,
+            'quantity': self.quantity,
+            'price_unitaire': self.price_unitaire
         }
+    def save(self):
+        # inject self into db session    
+        db.session.add ( self )
+        # commit change and save the object
+        db.session.commit()
+        return self 
+
+    
+class CommandeLigne(db.Model):
+    __tablename__ = 't_commande_ligne'
+
+    id = db.Column(db.Integer, primary_key=True)
+    fk_commande_vente = db.Column(db.Integer, db.ForeignKey('t_commande_vente.id_commande_vente'))
+    fk_ligne_commande = db.Column(db.Integer, db.ForeignKey('t_ligne_commande.id_ligne_cmd'))
+
+    commande_vente = db.relationship('CommandeVente', back_populates='lignes_commande')
+    ligne_commande = db.relationship('LigneCommande', back_populates='commande_ligne')
+
+    def __init__(self, fk_commande_vente, fk_ligne_commande):
+        self.fk_ligne_commande = fk_ligne_commande
+        self.fk_commande_vente = fk_commande_vente
+
+    def __repr__(self):
+        return f"<CommandeLigne {self.id}>"
+
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'commande_vente': self.commande_vente.as_dict(),
+            'ligne_commande': self.ligne_commande.as_dict()
+        }
+    def save(self):
+        # inject self into db session    
+        db.session.add ( self )
+        # commit change and save the object
+        db.session.commit()
+        return self 
+
+

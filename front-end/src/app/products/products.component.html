@@ -52,7 +52,7 @@
 							</div>		
 							<!--Quantity start-->
 							<div class="col-5 px-0  mb-2 mr-2" >
-								<input [(ngModel)]="quantity" type="number"  id="quantity" #quantityRef  name="num" class="form-control input-btn input-number" [max]="product.quantity" >
+								<input [(ngModel)]="quantity" type="number"  id="quantity" #quantityRef  name="num" class="form-control input-btn input-number" [max]="product.quantity" min="1" >
 							</div>					
 							<div  *ngIf="product.quantity>0">
 								<span class="price shopping-cart " >

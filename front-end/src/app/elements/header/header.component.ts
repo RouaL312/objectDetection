@@ -8,6 +8,7 @@ import {LocalStorageService} from "ngx-webstorage";
 import { ShoppingCartService } from 'src/app/shared/service/shopping-cart.service';
 import { Product } from 'src/app/model/product';
 import { FileUploadService } from 'src/app/shared/service/file-upload.service';
+import { MessageService } from 'primeng/api';
 
 
 @Component({
@@ -18,17 +19,19 @@ import { FileUploadService } from 'src/app/shared/service/file-upload.service';
 })
 export class HeaderComponent implements OnInit {
 
+
 	toggleChat: boolean = true;
 	toggleSingle: boolean = true;
   username!: string;
   role!:string;
-  cards: {product: Product, quantity: number}[] = [];
+  cards!: {product: Product, quantity: number}[] ;
   imageProduct: any;
   previews: any;
   i: any
   productsImages: any[] = [];
 	constructor(private authService: AuthService, private router: Router, public sanitizer: DomSanitizer, private uploadService: FileUploadService,
-              public title: Title, private localStorageService: LocalStorageService , private shoppingCartService:ShoppingCartService) { }
+              public title: Title, private localStorageService: LocalStorageService , 
+              private shoppingCartService:ShoppingCartService,private messageService:MessageService) { }
   ngOnInit(): void {
     // @ts-ignore
     this.username = this.localStorageService.retrieve("login");
@@ -76,14 +79,20 @@ export class HeaderComponent implements OnInit {
     }
 
 }
+ConfirmCommande() {
+ this.shoppingCartService.saveCommande(this.cards).subscribe(data => {
+  this.messageService.add({severity: 'success', summary: 'Successful', detail: data.message, life: 1000});
+  this.router.navigateByUrl('/admin/orders');
+    this.cards=[]
+    }, (error: any) => {
+      this.messageService.add({severity: 'error', summary: 'Probléme de Validation', detail: error.message});
+    });
+}
   logout() {
-    this.authService.logout().then(data => {
-      if (data) {
         this.localStorageService.clear();
         this.authService.token = null;
         this.router.navigateByUrl('/login');
-      }
-    })
+   
   }
 
 	togglechatbar() {

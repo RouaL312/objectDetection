@@ -46,7 +46,8 @@ export class EditProductsComponent implements OnInit {
   status: string[] = ['OUTOFSTOCK', 'INSTOCK', 'LOWSTOCK'];
   i: any
   constructor(private productService: ProductService, private messageService: MessageService,
-    private confirmationService: ConfirmationService, public sanitizer: DomSanitizer, private uploadService: FileUploadService) { }
+    private confirmationService: ConfirmationService, public sanitizer: DomSanitizer, private uploadService: FileUploadService, private title :Title) { 
+      title.setTitle('Products')}
 
   ngOnInit() {
     this.productService.getProducts().subscribe(data => {

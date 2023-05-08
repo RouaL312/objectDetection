@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 
+import json
 import random
 import numpy as np
 from sqlalchemy import desc, not_
@@ -17,11 +18,12 @@ from werkzeug.exceptions import HTTPException, NotFound, abort
 from flask.views import MethodView
 from datetime import datetime, timedelta
 # App modules
-from app import app, lm, db, bc, webdetect
-from app.models import CommandeVente, LigneCommande, Product, User
+from app import app, lm, db, bc, webdetect,yolo, add_to_cart 
+from app.models import CommandeVente, LigneCommande, Product, User,CommandeLigne
 from app.forms import LoginForm, RegisterForm
 #jwt
 import jwt
+from typing import List
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 print(basedir)
@@ -296,7 +298,19 @@ def delete_product():
         db.session.delete(product)
         db.session.commit()
         return jsonify({'message': 'Product deleted successfully'})
-    
+#Get product by code
+@app.route('/api/product/productByCode', methods=['GET'])
+def get_product_by_code():
+    codeProduct = request.args.get('codeProduct')
+    product=Product.query.filter_by(code=codeProduct).first()
+    product_data = {'id': product.id, 'code': product.code, 'name': product.name,
+                        'description': product.description, 'url_image_prod': product.url_image_prod,
+                        'price': product.price, 'category': product.category, 'quantity': product.quantity,
+                        'inventorystatus': product.inventorystatus,
+                        'rating': product.rating}
+
+    return jsonify(product_data)
+
 #--------------- object detection --------------------
 #open camera for object detection
 @app.route('/api/video_feed', methods=['GET','POST']) #take video feed from cam to browser
@@ -306,21 +320,115 @@ def video_feed():
 
 #add to card
 @app.route('/api/add_to_cart', methods=['GET'])# function to add item to cart for billing
-def add_to_cart():
-	from app import yolo
-	classids,boxes=yolo.detectionofkstore() #return detected class and area of contures
-	print('item detected add to cart',classids,boxes)
-	from app import add_to_cart
-	id_commande_vente=add_to_cart.cartdb(classids,boxes) #item added to bill 
-	print('added to cart')
-    # Create an array with int64 data type
+def addToCart():
+    ligne_commande_vente = None
+    classids, boxes = yolo.detectionofkstore() # return detected class and area of contours
+    print('item detected add to cart', classids, boxes)
+    ligne_commande_vente = add_to_cart.cartdb(classids, boxes) # item added to bill
+    print('added to cart')
+    # Check if ligne_commande is not empty
+    if ligne_commande_vente:
+        return jsonify([ligne_commande_vente.as_dict()]) # return ligne_commande_vente as a JSON object
+    else:
+        return None # return None if ligne_commande_vente is empty
 
     # Convert the int64 array to a standard Python integer array
-	return jsonify({'id_commande_vente': id_commande_vente})
 
 #get all commande vente
 @app.route('/api/commande_vente', methods=['GET'])# function to add item to cart for billing
-def get_commande_vente_with_ligne_commande():
-    commandes_vente =db.session.query(CommandeVente, LigneCommande, Product).join(LigneCommande, CommandeVente.fk_ligne_commande_vente == LigneCommande.id_ligne_cmd).join(Product, Product.code == LigneCommande.fk_product).all()
-    print('------result ---',commandes_vente)
-    return jsonify([dict(c.as_dict(), **l.as_dict(),**p.as_dict()) for c, l, p in commandes_vente])
+def get_commande_vente_with_ligne_commande() -> List[CommandeVente]:
+    commandes = db.session.query(CommandeVente).all()
+    def serialize(obj):
+        if isinstance(obj, CommandeVente):
+            return {
+                'id_commande_vente': obj.id_commande_vente,
+                'date_commande': obj.date_creation.strftime('%Y-%m-%d %H:%M:%S'),
+                'montant_total': obj.montant_total,
+                'ligne_commande': obj.lignes_commande,
+                'login': obj.login
+            }
+        elif isinstance(obj, LigneCommande):
+            return {
+                'id_ligne_cmd': obj.id_ligne_cmd,
+                'produit': obj.fk_product,
+                'quantite': obj.quantity,
+                'product_name': obj.product.name,  # Include product name
+                'product_price': float(obj.product.price),  # Include product price
+            }
+        elif isinstance(obj, CommandeLigne):
+            return {
+                'id_commande_ligne': obj.id,
+                'fk_commande_vente': obj.fk_commande_vente,
+                'fk_ligne_commande': obj.fk_ligne_commande
+            }
+        elif isinstance(obj, Product):
+            return {
+                'id' :obj.id,
+                'code': obj.code,
+                'name' : obj.name,
+                'category':obj.category,
+                'price' : float(obj.price),
+            }
+        else:
+            raise TypeError(f'Object of type {obj.__class__.__name__} is not JSON serializable')
+
+    result = []
+    for commande in commandes:
+        lignes_commande = db.session.query(LigneCommande)\
+                                    .join(CommandeLigne)\
+                                    .join(Product, LigneCommande.fk_product == Product.id)\
+                                    .filter(CommandeLigne.fk_commande_vente == commande.id_commande_vente)\
+                                    .all()
+        commande_dict = serialize(commande)
+        commande_dict['ligne_commande'] = []
+        for ligne_commande in lignes_commande:
+            ligne_commande_dict = serialize(ligne_commande)
+            ligne_commande_dict['product_name'] = ligne_commande.product.name
+            ligne_commande_dict['product_price'] = float(ligne_commande.product.price)
+            commande_dict['ligne_commande'].append(ligne_commande_dict)
+        result.append(commande_dict)
+    print(json.dumps(result, default=serialize))
+    return json.dumps(result, default=serialize)
+#save commande vente
+
+
+@app.route('/api/commande/saveCommande', methods=['POST'])
+def save_commande():
+    try:
+        cards = request.get_json()
+        # Create new CommandeVente object
+        vente = CommandeVente(login=cards[0]['user'],montant_total=0)
+        print(vente)
+        # Add new CommandeVente to session
+        db.session.add(vente)
+        db.session.flush()
+
+        # Loop over cards to create and add new CommandeLigne objects to session
+        for card in cards:
+            product=Product.query.filter_by(code=card['product']['code']).first()
+            quantity = card['quantity']
+            ligne = LigneCommande(fk_product=product.id, quantity=quantity, price_unitaire=product.price)
+            db.session.add(ligne)
+            db.session.flush()
+
+            commande_ligne = CommandeLigne(fk_commande_vente=vente.id_commande_vente, fk_ligne_commande=ligne.id_ligne_cmd)
+            db.session.add(commande_ligne)
+
+            # Update montant_total of CommandeVente
+            vente.montant_total += ligne.price_unitaire * ligne.quantity
+
+
+
+        # Commit all changes to database
+        db.session.commit()
+
+        # Return success message
+        return jsonify({'message': 'Commande saved successfully.'}), 200
+    except Exception as e:
+        # Rollback changes and return error message
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+
+

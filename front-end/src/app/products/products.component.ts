@@ -3,7 +3,7 @@ import { Product } from '../model/product';
 import { SelectItem } from 'primeng/api/selectitem';
 import { ProductService } from '../shared/service/product.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { FileUploadService } from '../shared/service/file-upload.service';
 import { MessageService } from 'primeng/api';
 import { ShoppingCartService } from '../shared/service/shopping-cart.service';
@@ -24,11 +24,12 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   previews: any;
   i: any
   productsImages: any[] = [];
-  quantity: number = 0;
+  quantity: number = 1;
 
-  constructor(private productService: ProductService, private modalService: NgbModal, public sanitizer: DomSanitizer, private renderer: Renderer2, private elementRef: ElementRef,
+  constructor(private title: Title,private productService: ProductService, private modalService: NgbModal, public sanitizer: DomSanitizer, private renderer: Renderer2, private elementRef: ElementRef,
     private uploadService: FileUploadService, public messageService: MessageService, public shoppingCartService: ShoppingCartService) {
-  }
+      title.setTitle('Accueil')
+    }
 
 
   open(content: any) {
