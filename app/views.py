@@ -326,9 +326,22 @@ def addToCart():
     print('item detected add to cart', classids, boxes)
     ligne_commande_vente = add_to_cart.cartdb(classids, boxes) # item added to bill
     print('added to cart')
+    def serialize(obj):
+        if isinstance(obj, LigneCommande):
+            return {
+                'id_ligne_cmd': obj.id_ligne_cmd,
+                'produit': obj.fk_product,
+                'quantite': obj.quantity,
+                'product_name': obj.product.name,  # Include product name
+                'product_price': float(obj.product.price),  # Include product price
+            }
+        else:
+            raise TypeError(f'Object of type {obj.__class__.__name__} is not JSON serializable')
     # Check if ligne_commande is not empty
     if ligne_commande_vente:
-        return jsonify([ligne_commande_vente.as_dict()]) # return ligne_commande_vente as a JSON object
+        ligne_commande = serialize(ligne_commande_vente)
+        print(ligne_commande)
+        return json.dumps(ligne_commande, default=serialize) # return ligne_commande_vente as a JSON object
     else:
         return None # return None if ligne_commande_vente is empty
 

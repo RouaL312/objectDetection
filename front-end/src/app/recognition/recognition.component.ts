@@ -47,8 +47,8 @@ export class RecognitionComponent implements OnInit {
       for ( let i =0; i<data.length;i++){
         const code_product = data[i].code_product;
         const codeProductNumber = parseInt(code_product);
-        console.log(codeProductNumber); 
-        this.productService.getProductByCode(codeProductNumber).subscribe(prod=>{
+        console.log(code_product); 
+        this.productService.getProductByCode(code_product).subscribe(prod=>{
            this.shoppingCartService.addItem(prod, data.quantite);
         })
       }
