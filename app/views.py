@@ -298,11 +298,11 @@ def delete_product():
         db.session.delete(product)
         db.session.commit()
         return jsonify({'message': 'Product deleted successfully'})
-#Get product by code
-@app.route('/api/product/productByCode', methods=['GET'])
-def get_product_by_code():
-    codeProduct = request.args.get('codeProduct')
-    product=Product.query.filter_by(code=codeProduct).first()
+#Get product by Id
+@app.route('/api/product/productById', methods=['GET'])
+def get_product_by_Id():
+    idProduct = request.args.get('fk_product')
+    product=Product.query.filter_by(id=idProduct).first()
     product_data = {'id': product.id, 'code': product.code, 'name': product.name,
                         'description': product.description, 'url_image_prod': product.url_image_prod,
                         'price': product.price, 'category': product.category, 'quantity': product.quantity,
@@ -325,25 +325,10 @@ def addToCart():
     classids, boxes = yolo.detectionofkstore() # return detected class and area of contours
     print('item detected add to cart', classids, boxes)
     ligne_commande_vente = add_to_cart.cartdb(classids, boxes) # item added to bill
-    print('added to cart')
-    def serialize(obj):
-        if isinstance(obj, LigneCommande):
-            return {
-                'id_ligne_cmd': obj.id_ligne_cmd,
-                'produit': obj.fk_product,
-                'quantite': obj.quantity,
-                'product_name': obj.product.name,  # Include product name
-                'product_price': float(obj.product.price),  # Include product price
-            }
-        else:
-            raise TypeError(f'Object of type {obj.__class__.__name__} is not JSON serializable')
+    print(ligne_commande_vente)
     # Check if ligne_commande is not empty
     if ligne_commande_vente:
-        ligne_commande = serialize(ligne_commande_vente)
-        print(ligne_commande)
-        return json.dumps(ligne_commande, default=serialize) # return ligne_commande_vente as a JSON object
-    else:
-        return None # return None if ligne_commande_vente is empty
+        return jsonify([ligne_commande_vente.as_dict()])
 
     # Convert the int64 array to a standard Python integer array
 

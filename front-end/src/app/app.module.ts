@@ -72,6 +72,7 @@ import {NavigationComponent} from "./elements/navigation/navigation.component";
 import {FooterComponent} from "./elements/footer/footer.component";
 import {HeaderComponent} from "./elements/header/header.component";
 import {SwitcherComponent} from "./elements/switcher/switcher.component";
+import { SidebarModule } from 'primeng/sidebar';
 import {HttpClientInterceptor} from "./shared/http-client-interceptor";
 import {LoadingComponent} from "./elements/loading/loading.component";
 import {LayoutsComponent} from './layouts/layouts.component';
@@ -135,6 +136,8 @@ import { TreeModule } from 'primeng/tree';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { TreeTableModule } from 'primeng/treetable';
 import { CurrencyPipe } from '@angular/common';
+import { OrderListModule } from 'primeng/orderlist';
+import { TagModule } from 'primeng/tag';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -178,6 +181,9 @@ FullCalendarModule.registerPlugins([
     CheckBillComponent,
   ],
   imports: [
+    SidebarModule,
+    TagModule,
+    OrderListModule,
     MatDatepickerModule,
     CalendarModule,
     ProgressSpinnerModule,

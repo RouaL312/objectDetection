@@ -8,7 +8,7 @@ import {LocalStorageService} from "ngx-webstorage";
 import { ShoppingCartService } from 'src/app/shared/service/shopping-cart.service';
 import { Product } from 'src/app/model/product';
 import { FileUploadService } from 'src/app/shared/service/file-upload.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 
 @Component({
@@ -31,7 +31,8 @@ export class HeaderComponent implements OnInit {
   productsImages: any[] = [];
 	constructor(private authService: AuthService, private router: Router, public sanitizer: DomSanitizer, private uploadService: FileUploadService,
               public title: Title, private localStorageService: LocalStorageService , 
-              private shoppingCartService:ShoppingCartService,private messageService:MessageService) { }
+              private shoppingCartService:ShoppingCartService,private messageService:MessageService,
+              private confirmationService:ConfirmationService) { }
   ngOnInit(): void {
     // @ts-ignore
     this.username = this.localStorageService.retrieve("login");
@@ -80,13 +81,21 @@ export class HeaderComponent implements OnInit {
 
 }
 ConfirmCommande() {
- this.shoppingCartService.saveCommande(this.cards).subscribe(data => {
-  this.messageService.add({severity: 'success', summary: 'Successful', detail: data.message, life: 1000});
-  this.router.navigateByUrl('/admin/orders');
-    this.cards=[]
-    }, (error: any) => {
-      this.messageService.add({severity: 'error', summary: 'Probléme de Validation', detail: error.message});
-    });
+   this.confirmationService.confirm({
+    message: 'Do you want to Confirm your order?',
+    header: 'Delete Confirmation',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+
+      this.shoppingCartService.saveCommande(this.cards).subscribe(data => {
+        this.messageService.add({severity: 'success', summary: 'Successful', detail: data.message, life: 1000});
+        this.router.navigateByUrl('/admin/orders');
+          this.cards=[]
+          }, (error: any) => {
+            this.messageService.add({severity: 'error', summary: 'Probléme de Validation', detail: error.message});
+          });
+    }
+  });
 }
   logout() {
         this.localStorageService.clear();
@@ -102,7 +111,9 @@ ConfirmCommande() {
 		this.toggleSingle = !this.toggleSingle;
 	}
 
-
+  deleteLigne(index: number) {
+    this.cards.splice(index,1)
+  }
 }
 
 var stringToHTML = function (str: string) {

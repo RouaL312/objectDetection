@@ -1,32 +1,62 @@
 <p-progressSpinner *ngIf="spinner" aria-label="Loading"></p-progressSpinner>
 <p-toast></p-toast>
-<div class="row" >
-
+<div class="row">
   <div class="card" *ngIf="imageSrc!=''; else noImage">
     <div class="card-body">
-    <span class="price shopping-cart ">
+      <span class="price shopping-cart ">
         <a class="btn btn-primary" href="javascript:void(0)" (click)="addToCart()"><i
-          class="pi pi-shopping-cart mr-2" ></i>Add
-        to cart</a>
+            class="pi pi-shopping-cart mr-2"></i>Add
+          to cart</a>
         <a class="btn btn-primary" style="margin:5px" href="javascript:void(0)" (click)="removeFromCart()"><i
-          class="pi pi-trash mr-2" ></i>Remove from cart</a>
-      <a class="btn btn-primary" href="javascript:void(0)" (click)="checkBill()"><i
-          class="pi pi-dollar mr-2"  ></i>check Bill</a>
-    </span>
-  </div>
-
-  <img [src]="imageSrc">
-</div>
-</div>
-<div class="row">
-  <div class="card">
+            class="pi pi-trash mr-2"></i>Remove from cart</a>
+        <a class="btn btn-primary" href="javascript:void(0)" (click)="showDialog('right')"><i
+            class="pi pi-dollar mr-2"></i>check Bill</a>
+      </span>
+    </div>
+    <img [src]="imageSrc">
   </div>
 </div>
-<ng-template #noImage  >
+<ng-template #noImage>
   <div *ngIf="spinner==false" style="display: flex;align-items: center;">
-    <p-button  styleClass="p-button-rounded p-button-secondary p-button-text p-button-raised" (click)="startCameraForObjectDetection()">
-      <i class="pi pi-play " style="font-size: 1.5rem" > </i>
-       Start Camera For Object Detection
+    <p-button styleClass="p-button-rounded p-button-secondary p-button-text p-button-raised"
+      (click)="startCameraForObjectDetection()">
+      <i class="pi pi-play " style="font-size: 1.5rem"> </i>
+      Start Camera For Object Detection
     </p-button>
   </div>
 </ng-template>
+<p-confirmDialog [style]="{width: '450px',height:'200px',textAlign:'center'}"></p-confirmDialog>
+
+<p-dialog header="Your Order" [(visible)]="visible" [position]="position" [style]="{ width: '20vw' }">
+  <div id="DZ_W_Notification1" class="widget-media dz-scroll p-3 height380" [perfectScrollbar]>
+    <div *ngFor="let item of cards; let i = index">
+      <div class="timeline-panel">
+        <div class="media mr-1">
+          <img *ngIf="item.product.previews!=null; else noImage" width="50"
+            [src]="sanitizer.bypassSecurityTrustResourceUrl(item.product.previews!.toString())">
+        </div>
+        <ng-template #noImage>
+          <i class="fa fa-question " style="font-size: 100px;text-align: center;"></i>
+        </ng-template>
+
+        <div class="media-body">
+          <h6 class="mb-1">{{item.product.name}}</h6>
+          <small class="d-block">Unit price: {{item.product.price |
+            currency:'USD'}}</small>
+          <small class="d-block">Total Quantity: {{item.quantity}}</small>
+        </div>
+        <div class="media-body">
+
+          <p style="text-align: right;">{{item.product.price * item.quantity |
+            currency:'USD' }}
+            <p-button icon="pi pi-times" styleClass="p-button-rounded p-button-danger p-button-text"
+              (onClick)="deleteLigne(i)"></p-button>
+
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a class="all-notification" href="javascript:void(0);" (click)="ConfirmCommande()">Confirm command <i
+      class="ti-arrow-right"></i></a>
+</p-dialog>

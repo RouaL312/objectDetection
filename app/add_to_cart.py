@@ -22,8 +22,8 @@ def cartdb(classids, boxes):
         if (area < 4000 and classids[i] == 4):
             itemid = itemid + 1000
         print(itemid, area)
-        product = Product.query.filter_by(code=str(itemid)).first()
-        ligneCommande = LigneCommande(product.price, 1, str(itemid))
+        product = Product.query.filter_by(code=int(itemid)).first()
+        ligneCommande = LigneCommande(product.id, 1, product.price)
 
     """if (len(classids) > 0):
         # Query the LigneCommande table and order the results by itemid

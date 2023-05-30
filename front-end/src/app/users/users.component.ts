@@ -148,7 +148,7 @@ export class UsersComponent implements OnInit {
     } else {
       this.openpopup=true;
     }
-    this.title = 'Modifier Utlisateur';
+    this.title = 'Edit user';
     this.user = {...user};
     this.displayEdit = true;
     this.displayAdd = false;
@@ -222,8 +222,8 @@ export class UsersComponent implements OnInit {
 
   deleteUser(user: User) {
     this.confirmationService.confirm({
-      message: 'Voulez vous supprimer l\'utilisateur ' + user.username + '?',
-      header: 'Confirmation de suppression',
+      message: 'Do you want to delete the user ?' + user.username + '?',
+      header: 'Delete confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         if (user.id != null) {

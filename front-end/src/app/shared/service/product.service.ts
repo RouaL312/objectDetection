@@ -55,9 +55,9 @@ export class ProductService {
       .pipe(retry(1),
       catchError(this.handleError))
   }
-  getProductByCode(codeProduct: Number ): Observable<Product> {
-    console.log(codeProduct)
-    return this.http.get<Product>(`${this.baseUrl + '/api/product/productByCode'}?codeProduct=${codeProduct}`)
+  getProductById(fk_product: Number ): Observable<Product> {
+    console.log(fk_product)
+    return this.http.get<Product>(`${this.baseUrl + '/api/product/productById'}?fk_product=${fk_product}`)
       .pipe(retry(1),
       catchError(this.handleError))
   }
