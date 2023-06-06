@@ -4,13 +4,10 @@
   <div class="card" *ngIf="imageSrc!=''; else noImage">
     <div class="card-body">
       <span class="price shopping-cart ">
-        <a class="btn btn-primary" href="javascript:void(0)" (click)="addToCart()"><i
-            class="pi pi-shopping-cart mr-2"></i>Add
-          to cart</a>
-        <a class="btn btn-primary" style="margin:5px" href="javascript:void(0)" (click)="removeFromCart()"><i
-            class="pi pi-trash mr-2"></i>Remove from cart</a>
-        <a class="btn btn-primary" href="javascript:void(0)" (click)="showDialog('right')"><i
-            class="pi pi-dollar mr-2"></i>check Bill</a>
+        <p-button label="Add to cart" styleClass="p-button-raised p-button-text"(click)="addToCart()"><i
+          class="pi pi-shopping-cart mr-2"></i></p-button>
+            <p-button label="check Cart" styleClass="p-button-raised p-button-text"(click)="showDialog('right')"><i
+              class="pi pi-dollar mr-2"></i></p-button>
       </span>
     </div>
     <img [src]="imageSrc">

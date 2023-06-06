@@ -41,10 +41,10 @@ def gen():
 
 	parser.add_argument('-c', '--confidence',
 		type=float,
-		default=0.5,
+		default=0.85,
 		help='The model will reject boundaries which has a \
 				probabiity less than the confidence value. \
-				default: 0.5')
+				default: 0.85')
 
 	parser.add_argument('-th', '--threshold',
 		type=float,

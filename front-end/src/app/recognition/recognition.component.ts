@@ -46,9 +46,9 @@ export class RecognitionComponent implements OnInit {
         this.addToCart()
         this.cards=this.shoppingCartService.getItems()
         for (this.i = 0; this.i < this.cards.length; this.i++) {
-          this.getImageProduct(this.i)
+          this.getImageProduct(this.cards[this.i].product)
         }
-      }, 1000);
+      }, 2000);
     });
 
   }
@@ -142,7 +142,7 @@ export class RecognitionComponent implements OnInit {
          this.router.navigateByUrl('/admin/orders');
            this.cards=[]
            }, (error: any) => {
-             this.messageService.add({severity: 'error', summary: 'Probléme de Validation', detail: error.message});
+             this.messageService.add({severity: 'error', summary: 'probleme Validation', detail: error.message});
            });
      }
    });
